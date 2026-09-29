@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Store Admin | Olde Towne Country Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧾</text></svg>">
+</head>
+<body class="admin">
+  <div id="login" class="login hidden">
+    <form id="login-form" class="builder">
+      <h1>Store Admin</h1>
+      <p class="muted">Olde Towne Country Store</p>
+      <div class="field"><label for="l-user">Username</label><input id="l-user" name="username" autocomplete="username" required></div>
+      <div class="field"><label for="l-pass">Password</label><input id="l-pass" name="password" type="password" autocomplete="current-password" required></div>
+      <div id="login-error" class="alert error hidden" role="alert"></div>
+      <button class="btn" type="submit" style="width:100%">Sign In</button>
+    </form>
+  </div>
+
+  <div id="shell" class="shell hidden">
+    <aside class="side">
+      <div class="side-brand">Olde Towne<br><span>Store Admin</span></div>
+      <nav id="side-nav" aria-label="Admin">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#orders">Orders <span class="badge" id="badge-orders"></span></a>
+        <a href="#menu">Online Menu</a>
+        <a href="#ingredients">Stock / 86 List <span class="badge warn" id="badge-stock"></span></a>
+        <a href="#bakery">Bakery Menu</a>
+        <a href="#settings">Store Settings</a>
+        <a href="#messages">Messages <span class="badge" id="badge-messages"></span></a>
+        <a href="#account">Account</a>
+      </nav>
+      <div class="side-foot">
+        <a href="/" target="_blank" rel="noopener">View website ↗</a>
+        <button type="button" class="link-btn" id="logout">Sign out</button>
+      </div>
+    </aside>
+    <main class="content" id="view" tabindex="-1"></main>
+  </div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script type="module" src="/admin/admin.js"></script>
+</body>
+</html>

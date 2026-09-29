@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact Us | Olde Towne Country Store</title>
+  <meta name="description" content="Get in touch with Olde Towne Country Store in Itasca, TX.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥖</text></svg>">
+  <script type="module" src="/js/site.js"></script>
+</head>
+<body>
+<div id="site-header"></div>
+<main id="main">
+<section class="page-head">
+  <div class="wrap">
+    <h1>Contact Us</h1>
+    <p>Questions, special orders, or just want to say hello? We'd love to hear from you.</p>
+  </div>
+</section>
+<section class="block">
+  <div class="wrap split" style="align-items:start">
+    <div>
+      <h2>Visit or call</h2>
+      <p><strong data-store-address></strong></p>
+      <p>Phone: <a data-store-phone href="#"></a></p>
+      <h3 style="margin-top:24px">Hours</h3>
+      <div data-store-hours style="max-width:360px"></div>
+      <p class="hint" style="margin-top:16px">Bakery special orders need 48 hours' notice. Deli trays need 24 hours.</p>
+    </div>
+    <form id="contact-form" class="builder" novalidate>
+      <h2>Send a message</h2>
+      <div class="field"><label for="m-name">Name</label><input id="m-name" name="name" autocomplete="name" required maxlength="100"></div>
+      <div class="field-row">
+        <div class="field"><label for="m-email">Email</label><input id="m-email" name="email" type="email" autocomplete="email" required maxlength="200"></div>
+        <div class="field"><label for="m-phone">Phone <span class="hint">(optional)</span></label><input id="m-phone" name="phone" type="tel" autocomplete="tel" maxlength="30"></div>
+      </div>
+      <div class="field"><label for="m-message">Message</label><textarea id="m-message" name="message" rows="5" required maxlength="3000"></textarea></div>
+      <div id="contact-status" class="alert hidden" role="status"></div>
+      <button class="btn" type="submit">Send Message</button>
+    </form>
+  </div>
+</section>
+</main>
+<div id="site-footer"></div>
+<script type="module">
+const form = document.getElementById('contact-form');
+const status = document.getElementById('contact-status');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = form.querySelector('button');
+  btn.disabled = true;
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(Object.fromEntries(new FormData(form))),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    form.reset();
+    status.className = 'alert success';
+    status.textContent = 'Thanks! Your message has been sent. We’ll get back to you soon.';
+  } catch (err) {
+    status.className = 'alert error';
+    status.textContent = err.message || 'Something went wrong. Please call the store.';
+  }
+  btn.disabled = false;
+});
+</script>
+</body>
+</html>

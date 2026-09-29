@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bakery | Olde Towne Country Store</title>
+  <meta name="description" content="From-scratch breads, pies, fried pies, cookies, cinnamon rolls, and more. See our bakery menu and prices.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥖</text></svg>">
+  <script type="module" src="/js/site.js"></script>
+</head>
+<body>
+<div id="site-header"></div>
+<main id="main">
+<section class="page-head">
+  <div class="wrap">
+    <h1>The Bakery</h1>
+    <p>Breads, pies, cookies, and sweet treats made from scratch with quality ingredients. Special orders need 48 hours' notice — just give us a call.</p>
+  </div>
+</section>
+<section class="block">
+  <div class="wrap">
+    <div class="bakery-tabs" role="tablist" id="bakery-tabs"></div>
+    <div id="bakery-list" class="bakery-grid"><p class="center muted">Loading menu…</p></div>
+    <p class="center" style="margin-top:32px">Want something special? <a data-store-phone href="#"></a></p>
+  </div>
+</section>
+</main>
+<div id="site-footer"></div>
+<script type="module">
+import { esc, money } from "/js/site.js";
+const cats = await fetch("/api/bakery").then((r) => r.json());
+const tabs = document.getElementById("bakery-tabs");
+const list = document.getElementById("bakery-list");
+const render = (id) => {
+  const shown = id === "all" ? cats : cats.filter((c) => String(c.id) === id);
+  list.innerHTML = shown.map((c) => `<div class="card"><h3>${esc(c.name)}</h3>${c.note ? `<p>${esc(c.note)}</p>` : ""}
+    <ul class="price-list">${c.items.map((i) => `<li><span>${esc(i.name)}</span><span class="price">${i.price == null ? "" : money(i.price)}</span></li>`).join("")}</ul></div>`).join("")
+    || `<p class="center muted">Menu coming soon.</p>`;
+  tabs.querySelectorAll("button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.id === id)));
+};
+tabs.innerHTML = [`<button role="tab" data-id="all">All</button>`, ...cats.map((c) => `<button role="tab" data-id="${c.id}">${esc(c.name)}</button>`)].join("");
+tabs.addEventListener("click", (e) => e.target.dataset.id && render(e.target.dataset.id));
+render("all");
+</script>
+</body>
+</html>
