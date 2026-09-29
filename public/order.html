@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order Online | Olde Towne Country Store</title>
+  <meta name="description" content="Order deli sandwiches, subs, and wraps online for pickup in Itasca, TX.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥖</text></svg>">
+  <script type="module" src="/js/site.js"></script>
+</head>
+<body>
+<div id="site-header"></div>
+<main id="main">
+<section class="page-head">
+  <div class="wrap">
+    <h1>Order Online</h1>
+    <p>Build your sandwich, sub, or wrap and pick a time — we'll have it ready when you arrive. Orders need at least 15 minutes and can be placed up to a week ahead.</p>
+    <div class="steps"><span>1. Choose an item</span><span>2. Build it your way</span><span>3. Pick a time &amp; place your order</span></div><p style="margin-top:16px"><a href="/party-trays">Ordering for a crowd? See party trays →</a></p>
+  </div>
+</section>
+<section class="block">
+  <div class="wrap">
+    <div id="order-app" data-kind="deli">
+      <div class="order-layout">
+        <div>
+          <div class="product-picker" id="product-picker"></div>
+          <div class="builder" id="builder"><p class="muted">Loading menu…</p></div>
+        </div>
+        <aside class="cart" id="cart" aria-labelledby="cart-heading">
+          <h2 id="cart-heading">Your Order</h2>
+          <div id="cart-note" class="alert success hidden" role="status"></div>
+          <ul class="cart-items" id="cart-items"></ul>
+          <div id="cart-total"></div>
+          <form id="checkout" class="hidden" novalidate>
+            <h3>Pickup details</h3>
+            <div class="field"><label for="c-name">Name</label><input id="c-name" name="name" autocomplete="name" required maxlength="100"></div>
+            <div class="field"><label for="c-phone">Phone</label><input id="c-phone" name="phone" type="tel" autocomplete="tel" required maxlength="30"></div>
+            <div class="field"><label for="c-email">Email <span class="hint">(optional)</span></label><input id="c-email" name="email" type="email" autocomplete="email" maxlength="200"></div>
+            <div class="field"><label for="pickup-date">Pickup date</label><select id="pickup-date" name="pickupDate" required></select></div>
+            <div class="field"><label for="pickup-time">Pickup time</label><select id="pickup-time" name="pickupTime" required></select></div>
+            <ul class="pickup-rules hint" id="pickup-rules"></ul>
+            <div class="field"><label for="c-notes">Notes for the store <span class="hint">(optional)</span></label><textarea id="c-notes" name="notes" rows="2" maxlength="1000"></textarea></div>
+            <div id="checkout-error" class="alert error hidden" role="alert"></div>
+            <button class="btn" type="submit" style="width:100%">Place Order</button>
+            <p class="hint" style="margin-top:8px">No payment is taken online — pay when you pick up. Meats and cheeses are subject to availability.</p>
+          </form>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<div id="site-footer"></div>
+<script type="module" src="/js/order.js"></script>
+</body>
+</html>
