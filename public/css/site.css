@@ -262,3 +262,6 @@ fieldset.group legend { font-family: var(--serif); font-size: 1.15rem; font-weig
 .center { text-align: center; }
 .muted { color: var(--muted); }
 .hidden { display: none !important; }
+
+.pickup-rules { margin: -8px 0 16px; padding-left: 18px; }
+.pickup-rules li { margin-bottom: 2px; }

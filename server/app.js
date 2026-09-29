@@ -5,6 +5,7 @@ import { getSettings, setSetting, tx } from './db.js';
 import { createAuth, hashPassword, verifyPassword } from './auth.js';
 import { getMenu, validateOrder, insertOrder, OrderError, storeNow } from './ordering.js';
 import { DEFAULT_SETTINGS } from './seed.js';
+import { orderAlertEmail } from './mailer.js';
 
 const PUBLIC_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'public');
 
@@ -101,6 +102,16 @@ function validateSettings(body) {
     newsletter_url: 500, announcement: 500 };
   for (const [k, max] of Object.entries(text)) if (k in body) out[k] = str(max)(body[k]);
   for (const k of ['deli_ordering_enabled', 'tray_ordering_enabled']) if (k in body) out[k] = Boolean(body[k]);
+  if ('order_alert_emails' in body) {
+    const list = Array.isArray(body.order_alert_emails)
+      ? body.order_alert_emails
+      : String(body.order_alert_emails ?? '').split(/[\s,;]+/);
+    const emails = [...new Set(list.map((e) => String(e).trim().toLowerCase()).filter(Boolean))];
+    const bad = emails.find((e) => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
+    if (bad) throw new HttpError(400, `"${bad}" isn't a valid email address.`);
+    if (emails.length > 10) throw new HttpError(400, 'Up to 10 alert addresses.');
+    out.order_alert_emails = emails;
+  }
   if ('close_cutoff_minutes' in body) out.close_cutoff_minutes = int(0, 240)(body.close_cutoff_minutes);
   if ('timezone' in body) {
     try {
@@ -136,7 +147,7 @@ function loadOrder(db, id) {
   return order;
 }
 
-export function createApp({ db, sessionSecret, secureCookies = false }) {
+export function createApp({ db, sessionSecret, secureCookies = false, mailer = null, siteUrl = '', clock = () => new Date() }) {
   const app = express();
   const auth = createAuth({ db, secret: sessionSecret, secureCookies });
   // Keys starting with "_" are internal (e.g. the session secret) and never sent to clients.
@@ -154,6 +165,18 @@ export function createApp({ db, sessionSecret, secureCookies = false }) {
     res.set('X-Frame-Options', 'DENY');
     next();
   });
+
+  // Email the store about a new order. Runs in the background: a mail problem
+  // must never stop the customer's order from going through.
+  function sendOrderAlert(orderId, order) {
+    const s = settings();
+    const to = s.order_alert_emails || [];
+    if (!mailer || to.length === 0) return;
+    const msg = orderAlertEmail(orderId, order, { storeName: s.store_name, siteUrl });
+    mailer
+      .send({ to: to.join(', '), replyTo: order.customer.email || undefined, ...msg })
+      .catch((err) => console.error(`Order #${orderId}: alert email failed: ${err.message}`));
+  }
 
   // ---------- Public API ----------
   const api = express.Router();
@@ -175,8 +198,9 @@ export function createApp({ db, sessionSecret, secureCookies = false }) {
   });
 
   api.post('/orders', (req, res) => {
-    const order = validateOrder(db, settings(), req.body);
+    const order = validateOrder(db, settings(), req.body, clock());
     const orderId = tx(db, () => insertOrder(db, order));
+    sendOrderAlert(orderId, order);
     res.status(201).json({ id: orderId, estTotal: order.estTotal, hasUnpriced: order.hasUnpriced,
       pickupDate: order.pickupDate, pickupTime: order.pickupTime });
   });
@@ -451,6 +475,26 @@ export function createApp({ db, sessionSecret, secureCookies = false }) {
     const values = validateSettings(req.body || {});
     tx(db, () => Object.entries(values).forEach(([k, v]) => setSetting(db, k, v)));
     res.json(settings());
+  });
+
+  // Email alerts
+  admin.get('/email-status', (_req, res) => {
+    res.json({ configured: Boolean(mailer), recipients: settings().order_alert_emails || [] });
+  });
+  admin.post('/email-test', async (_req, res) => {
+    if (!mailer) throw new HttpError(400, 'Email isn’t set up on the server yet (SMTP settings are missing).');
+    const to = settings().order_alert_emails || [];
+    if (to.length === 0) throw new HttpError(400, 'Add at least one alert address and save first.');
+    try {
+      await mailer.send({
+        to: to.join(', '),
+        subject: 'Test: order alerts are working',
+        text: 'This is a test from your store website. New online orders will be emailed to this address.',
+      });
+    } catch (err) {
+      throw new HttpError(502, `The mail server rejected the test email: ${err.message}`);
+    }
+    res.json({ ok: true, sentTo: to });
   });
 
   // Contact messages

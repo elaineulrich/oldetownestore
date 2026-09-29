@@ -255,6 +255,24 @@ function renderPickupTimes() {
     : '<option value="">No pickup times available</option>';
   if (days.includes(prev)) dateSel.value = prev;
   renderTimes();
+  renderPickupRules();
+}
+
+// Spell out the ordering rules next to the pickup fields. The date and time
+// lists above only offer times that already satisfy these rules.
+function renderPickupRules() {
+  const s = state.settings;
+  const notice = (min) => (min >= 60 ? `${+(min / 60).toFixed(1)} hours` : `${min} minutes`);
+  const cutoff = Number(s.close_cutoff_minutes) || 0;
+  const products = [...new Map(state.cart.map((l) => [l.productId, state.allMenu.find((p) => p.id === l.productId)])).values()]
+    .filter(Boolean);
+  const rules = [
+    `Pickup is during store hours${cutoff ? `, up to ${cutoff} minutes before closing` : ''}. We're closed Sundays and holidays.`,
+    ...products.map((p) => `${p.name}: order at least ${notice(p.lead_minutes)} ahead, up to ${p.max_advance_days} days in advance.`),
+    'Only times that meet these rules are listed.',
+  ];
+  if (s.hours[0]) rules[0] = rules[0].replace(" We're closed Sundays and holidays.", " We're closed on holidays.");
+  $('#pickup-rules').innerHTML = rules.map((r) => `<li>${esc(r)}</li>`).join('');
 }
 
 function renderTimes() {

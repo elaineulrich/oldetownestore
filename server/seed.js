@@ -115,6 +115,7 @@ export const DEFAULT_SETTINGS = {
   tray_ordering_enabled: true,
   close_cutoff_minutes: 15,
   announcement: '',
+  order_alert_emails: [],
 };
 
 export function seed(db) {
