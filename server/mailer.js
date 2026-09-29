@@ -1,23 +1,34 @@
-import nodemailer from 'nodemailer';
 import { fmtTime } from './ordering.js';
 
+const RESEND_URL = 'https://api.resend.com/emails';
+
 /**
- * Build a mailer from SMTP_* environment variables. Returns null when email
- * isn't configured, so the rest of the app can treat alerts as optional.
+ * Build a Resend mailer from RESEND_API_KEY and EMAIL_FROM. Returns null when
+ * email isn't configured, so the rest of the app can treat alerts as optional.
+ * EMAIL_FROM must use a domain verified in Resend, e.g. "Olde Towne Orders <orders@example.com>".
  */
-export function createMailer(env = process.env) {
-  if (!env.SMTP_HOST) return null;
-  const port = Number(env.SMTP_PORT) || 587;
-  const transport = nodemailer.createTransport({
-    host: env.SMTP_HOST,
-    port,
-    secure: env.SMTP_SECURE ? env.SMTP_SECURE === 'true' : port === 465,
-    auth: env.SMTP_USER ? { user: env.SMTP_USER, pass: env.SMTP_PASS } : undefined,
-  });
-  const from = env.SMTP_FROM || env.SMTP_USER;
+export function createMailer(env = process.env, fetchImpl = fetch) {
+  if (!env.RESEND_API_KEY || !env.EMAIL_FROM) return null;
   return {
     configured: true,
-    send: (msg) => transport.sendMail({ from, ...msg }),
+    async send({ to, replyTo, subject, text, html }) {
+      const res = await fetchImpl(RESEND_URL, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: env.EMAIL_FROM,
+          to: Array.isArray(to) ? to : [to],
+          subject,
+          text,
+          ...(html ? { html } : {}),
+          ...(replyTo ? { reply_to: replyTo } : {}),
+        }),
+        signal: AbortSignal.timeout(15000),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || `Resend returned ${res.status}`);
+      return data;
+    },
   };
 }
 

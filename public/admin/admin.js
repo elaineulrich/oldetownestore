@@ -573,7 +573,7 @@ async function renderSettings() {
       </div>
       <div class="panel">
         <h2>New order email alerts</h2>
-        ${email.configured ? '' : '<div class="alert info">Email isn’t connected on the server yet, so alerts won’t send. Ask your web developer to add the SMTP settings.</div>'}
+        ${email.configured ? '' : '<div class="alert info">Email isn’t connected on the server yet, so alerts won’t send. Ask your web developer to add the Resend API key.</div>'}
         <div class="field"><label for="alert-emails">Send an email for every new online order to</label>
           <textarea id="alert-emails" name="order_alert_emails" rows="2" placeholder="orders@example.com, manager@example.com">${esc((s.order_alert_emails || []).join(', '))}</textarea>
           <div class="hint">Separate addresses with commas. Leave blank to turn alerts off. Replying to an alert emails the customer when they gave an address.</div></div>

@@ -33,7 +33,7 @@ if (db.prepare('SELECT COUNT(*) AS n FROM admin_users').get().n === 0) {
 }
 
 const mailer = createMailer();
-if (!mailer) console.log('Email alerts are off (set SMTP_HOST to enable them).');
+if (!mailer) console.log('Email alerts are off (set RESEND_API_KEY and EMAIL_FROM to enable them).');
 const app = createApp({
   db,
   sessionSecret,

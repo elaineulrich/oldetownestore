@@ -174,7 +174,7 @@ export function createApp({ db, sessionSecret, secureCookies = false, mailer = n
     if (!mailer || to.length === 0) return;
     const msg = orderAlertEmail(orderId, order, { storeName: s.store_name, siteUrl });
     mailer
-      .send({ to: to.join(', '), replyTo: order.customer.email || undefined, ...msg })
+      .send({ to, replyTo: order.customer.email || undefined, ...msg })
       .catch((err) => console.error(`Order #${orderId}: alert email failed: ${err.message}`));
   }
 
@@ -482,17 +482,17 @@ export function createApp({ db, sessionSecret, secureCookies = false, mailer = n
     res.json({ configured: Boolean(mailer), recipients: settings().order_alert_emails || [] });
   });
   admin.post('/email-test', async (_req, res) => {
-    if (!mailer) throw new HttpError(400, 'Email isn’t set up on the server yet (SMTP settings are missing).');
+    if (!mailer) throw new HttpError(400, 'Email isn’t set up on the server yet (RESEND_API_KEY and EMAIL_FROM are missing).');
     const to = settings().order_alert_emails || [];
     if (to.length === 0) throw new HttpError(400, 'Add at least one alert address and save first.');
     try {
       await mailer.send({
-        to: to.join(', '),
+        to,
         subject: 'Test: order alerts are working',
         text: 'This is a test from your store website. New online orders will be emailed to this address.',
       });
     } catch (err) {
-      throw new HttpError(502, `The mail server rejected the test email: ${err.message}`);
+      throw new HttpError(502, `The test email couldn’t be sent: ${err.message}`);
     }
     res.json({ ok: true, sentTo: to });
   });

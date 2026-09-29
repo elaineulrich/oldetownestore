@@ -28,13 +28,10 @@ On first start the database is created at `data/store.db` and seeded with the st
 | `SESSION_SECRET` | generated & stored in DB | Signs admin login cookies |
 | `NODE_ENV` | — | Set to `production` behind HTTPS to mark cookies `Secure` |
 | `SITE_URL` | — | Public site address, used for the "Open orders" link in alert emails |
-| `SMTP_HOST` | — | Mail server; setting it turns on new-order email alerts |
-| `SMTP_PORT` | `587` | Mail server port (`465` uses TLS automatically) |
-| `SMTP_USER` / `SMTP_PASS` | — | Mail server login (for Gmail, use an app password) |
-| `SMTP_FROM` | `SMTP_USER` | "From" address on alert emails |
-| `SMTP_SECURE` | auto | Force TLS on/off (`true`/`false`) |
+| `RESEND_API_KEY` | — | [Resend](https://resend.com) API key; with `EMAIL_FROM`, turns on new-order email alerts |
+| `EMAIL_FROM` | — | Sender, on a domain verified in Resend, e.g. `Olde Towne Orders <orders@yourdomain.com>` |
 
-Once SMTP is set, staff choose who receives alerts under **Admin → Store Settings → New order email alerts** and can send a test email from there. Alerts are sent in the background, so a mail problem never blocks a customer's order.
+Once Resend is set up, staff choose who receives alerts under **Admin → Store Settings → New order email alerts** and can send a test email from there. Alerts are sent in the background, so a mail problem never blocks a customer's order.
 
 Run the tests with `npm test`.
 
@@ -42,7 +39,7 @@ Run the tests with `npm test`.
 
 1. In the Railway service settings, deploy from the branch that has the code. Until the pull request is merged, that's `elaine`; after merging, `main` works too.
 2. Add a **Volume** to the service (mount path e.g. `/data`). The app stores its database there automatically via `RAILWAY_VOLUME_MOUNT_PATH`, so orders and menu edits survive redeploys.
-3. Set variables: `ADMIN_PASSWORD`, `NODE_ENV=production`, `SITE_URL`, and the `SMTP_*` values for email alerts.
+3. Set variables: `ADMIN_PASSWORD`, `NODE_ENV=production`, `SITE_URL`, `RESEND_API_KEY`, and `EMAIL_FROM` for email alerts.
 4. Railway detects Node from `package.json` and runs `npm start`; the app listens on Railway's `PORT`.
 
 ## What's included
