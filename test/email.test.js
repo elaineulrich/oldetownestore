@@ -4,7 +4,7 @@ import { openDb, setSetting } from '../server/db.js';
 import { createApp } from '../server/app.js';
 import { hashPassword } from '../server/auth.js';
 import { getMenu } from '../server/ordering.js';
-import { orderAlertEmail } from '../server/mailer.js';
+import { orderAlertEmail, createMailer } from '../server/mailer.js';
 
 const sent = [];
 let failNext = false;
@@ -13,7 +13,7 @@ const fakeMailer = {
   async send(msg) {
     if (failNext) {
       failNext = false;
-      throw new Error('SMTP down');
+      throw new Error('Resend down');
     }
     sent.push(msg);
   },
@@ -77,7 +77,7 @@ test('new order emails the store with order details', async () => {
   const { id } = await res.json();
   await waitForMail(1);
   const msg = sent.at(-1);
-  assert.equal(msg.to, 'orders@store.example, owner@store.example');
+  assert.deepEqual(msg.to, ['orders@store.example', 'owner@store.example']);
   assert.equal(msg.replyTo, 'jane@example.com');
   assert.match(msg.subject, new RegExp(`#${id}.*Monday, October 5 at 11:30 AM.*Jane Doe`));
   assert.match(msg.text, /Cut in half/);
@@ -112,4 +112,29 @@ test('alert email labels tray orders and unpriced totals', () => {
   });
   assert.match(email.text, /New party tray order #7/);
   assert.match(email.text, /Priced at counter/);
+});
+
+test('Resend mailer is off without a key and sender', () => {
+  assert.equal(createMailer({}), null);
+  assert.equal(createMailer({ RESEND_API_KEY: 're_x' }), null);
+});
+
+test('Resend mailer posts the right request and surfaces API errors', async () => {
+  const calls = [];
+  let reply = { ok: true, status: 200, json: async () => ({ id: 'email_1' }) };
+  const fakeFetch = async (url, init) => {
+    calls.push({ url, init });
+    return reply;
+  };
+  const mailer = createMailer({ RESEND_API_KEY: 're_test', EMAIL_FROM: 'Orders <orders@store.example>' }, fakeFetch);
+  await mailer.send({ to: ['a@store.example'], replyTo: 'jane@example.com', subject: 'Hi', text: 't', html: '<p>h</p>' });
+  assert.equal(calls[0].url, 'https://api.resend.com/emails');
+  assert.equal(calls[0].init.headers.Authorization, 'Bearer re_test');
+  assert.deepEqual(JSON.parse(calls[0].init.body), {
+    from: 'Orders <orders@store.example>', to: ['a@store.example'], subject: 'Hi', text: 't', html: '<p>h</p>',
+    reply_to: 'jane@example.com',
+  });
+
+  reply = { ok: false, status: 403, json: async () => ({ message: 'The domain is not verified.' }) };
+  await assert.rejects(mailer.send({ to: 'a@store.example', subject: 'x', text: 'y' }), /not verified/);
 });
