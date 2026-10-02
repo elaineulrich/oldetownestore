@@ -68,4 +68,4 @@ test/     node:test suite
 
 ## Photos
 
-Pages show striped placeholders where photos go (e.g. `/images/home-deli.jpg`). Drop the store's own photos into `public/images/` and swap the placeholder `<div>`s for `<img>` tags.
+Photos in `public/images/` come from the store's current website (resized to 1600px for the web). Swap any of them by replacing the file with the same name. Hand-drawn illustrations used on bakery cards live in `public/img/`.

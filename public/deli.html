@@ -7,7 +7,7 @@
   <meta name="description" content="Fresh-sliced deli meats and cheeses and made-to-order sandwiches, subs, and wraps on house-baked bread in Itasca, TX.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Figtree:wght@400;500;600;700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..800,0..100,0..1;1,9..144,400..800,0..100,0..1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@400;500;600&family=Yellowtail&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/site.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥖</text></svg>">
   <script type="module" src="/js/site.js"></script>
@@ -15,9 +15,10 @@
 <body>
 <div id="site-header"></div>
 <main id="main">
-<section class="page-head">
+<section class="page-head" style="--img:url('/images/deli-counter.jpg')">
   <div class="wrap">
-    <h1>The <em>deli.</em></h1>
+    <div class="crumbs"><a href="/">Home</a> &nbsp;/&nbsp; The Deli</div>
+    <h1>The Deli</h1>
     <p>Sandwiches, subs, and wraps built to order on bread from our own ovens — plus meats and cheeses sliced by the pound.</p>
     
   </div>
@@ -26,7 +27,8 @@
 <section class="block">
   <div class="wrap split">
     <div>
-      <h2>Built to order, <em>every time.</em></h2>
+      <p class="kicker">Made to order</p>
+      <h2>Built Your Way</h2>
       <p>Every sandwich starts with bread from our own bakery — try it on our jalapeño cheese bread, a local favorite. Pick from a long list of hams, turkeys, roast beef, bolognas, and specialty meats, then top it with your choice of cheese, veggies, and condiments.</p>
       <p>Want to take some home? We'll slice any of our meats and cheeses to order by the pound.</p>
       <div class="hero-actions" style="justify-content:flex-start">
@@ -34,17 +36,19 @@
         <a class="btn secondary" href="/party-trays">Order a Party Tray</a>
       </div>
     </div>
-    <div class="art-panel tomato"><img class="tilt" src="/img/sandwich.svg" alt="Illustration of a deli sandwich"></div>
+    <div class="photo framed"><img src="/images/deli-sandwich.jpg" alt="A deli sandwich on the counter scale"></div>
   </div>
 </section>
 
-<section class="block paper">
+<section class="block tint">
   <div class="wrap">
     <div class="section-head">
-      <h2>Behind the <em>glass.</em></h2>
-      <p>What's in the case today. This list updates when something sells out.</p>
+      <p class="kicker">In the case today</p>
+      <h2>Meats &amp; Cheeses</h2>
+      <div class="flourish"><span></span></div>
+      <p class="lede">What's in the case today. This list updates when something sells out.</p>
     </div>
-    <div class="split" style="align-items:start">
+    <div class="split" style="align-items:start;text-align:left">
       <div><h3>Meats</h3><div class="tags" id="meats"></div></div>
       <div><h3>Cheeses</h3><div class="tags" id="cheeses"></div></div>
     </div>

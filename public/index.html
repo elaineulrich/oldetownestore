@@ -7,7 +7,7 @@
   <meta name="description" content="Hometown deli sandwiches on fresh-baked bread, from-scratch pies and cookies, bulk groceries, and party trays in Itasca, Texas. Order online for pickup.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Figtree:wght@400;500;600;700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..800,0..100,0..1;1,9..144,400..800,0..100,0..1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@400;500;600&family=Yellowtail&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/site.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥖</text></svg>">
   <script type="module" src="/js/site.js"></script>
@@ -15,29 +15,24 @@
 <body>
 <div id="site-header"></div>
 <main id="main">
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <p class="label" style="color:var(--tomato-dark)">Deli · Bakery · Bulk foods — on Main Street</p>
-      <h1>Bread baked this morning. <em>Meat sliced</em> while you wait.</h1>
-      <p class="hero-lede">We're the little country store in downtown Itasca where lunch comes on homemade bread, the pie case empties early, and the pantry shelves are stocked by the scoop.</p>
-      <div class="hero-actions">
-        <a class="btn" href="/order">Order a sandwich</a>
-        <a class="btn secondary" href="/party-trays">Plan a party tray</a>
-      </div>
-    </div>
-    <div class="hero-art" aria-hidden="true">
-      <svg class="badge-spin" viewBox="0 0 200 200">
-        <defs><path id="circ" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0"/></defs>
-        <circle cx="100" cy="100" r="98" fill="#fbf7ef" stroke="#1f1a17" stroke-width="3"/>
-        <text><textPath href="#circ">BAKED FRESH ✺ SLICED TO ORDER ✺ ITASCA, TEXAS ✺</textPath></text>
-        <text x="100" y="112" text-anchor="middle" style="font:700 34px Fraunces, Georgia, serif;letter-spacing:0">✺</text>
-      </svg>
-      <div class="plate"></div>
-      <img src="/img/sandwich.svg" alt="">
-      <div class="note"><strong data-store-status>Open today</strong>Order online for pickup — pay at the counter.</div>
+<section class="hero" style="--hero-img:url('/images/deli-sandwich.jpg')">
+  <div class="wrap">
+    <div class="hero-emblem" data-emblem></div>
+    <p class="kicker">Deli · Bakery · Bulk Foods</p>
+    <h1>A Taste of Small-Town Texas</h1>
+    <p>Sandwiches on bread we bake ourselves, meats and cheeses sliced to order, and pies that sell out early — right on Main Street in Itasca.</p>
+    <div class="hero-actions">
+      <a class="btn" href="/order">Order deli online</a>
+      <a class="btn light" href="/bakery">See the bakery</a>
     </div>
   </div>
+  <svg class="badge-spin" viewBox="0 0 200 200" aria-hidden="true">
+    <defs><path id="circ" d="M100 100m-80 0a80 80 0 1 1 160 0a80 80 0 1 1-160 0"/></defs>
+    <circle cx="100" cy="100" r="98" fill="rgba(200,144,43,.92)"/>
+    <circle cx="100" cy="100" r="62" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="2 5"/>
+    <text><textPath href="#circ">BAKED FRESH ✻ SLICED TO ORDER ✻ ITASCA, TEXAS ✻</textPath></text>
+    <text x="100" y="114" text-anchor="middle" style="font:400 44px Yellowtail, cursive;fill:#fff;letter-spacing:0">OT</text>
+  </svg>
 </section>
 
 <div class="ticker" aria-hidden="true">
@@ -47,117 +42,148 @@
   </div>
 </div>
 
-<section class="block">
+<section class="block" style="padding-top:0">
   <div class="wrap">
-    <div class="section-head">
-      <h2>A little bit of everything, <em>done right.</em></h2>
-      <p>Four corners of one store. Come for lunch, leave with a loaf, a pie, and whatever you ran out of at home.</p>
+    <div class="promos" style="margin-top:56px">
+      <a class="promo" href="/order" style="--img:url('/images/deli-slicer.jpg')">
+        <span class="script">Skip the line</span>
+        <strong>Order Ahead &amp; <em>Pick Up</em></strong>
+        <small>Most deli orders ready in about 15 minutes</small>
+      </a>
+      <a class="promo" href="/party-trays" style="--img:url('/images/cheese-case.jpg')">
+        <span class="script">Feeding a crowd?</span>
+        <strong>Party Trays for <em>15–45</em></strong>
+        <small>Meat &amp; cheese platters with a day's notice</small>
+      </a>
     </div>
-    <div class="bento">
-      <a class="dept deli" href="/deli">
-        <span class="label">The deli</span>
-        <h3>Sandwiches worth the drive into town</h3>
-        <p>Hams, turkeys, roast beef, bolognas, and a counter full of cheeses — stacked on our own bread or sliced by the pound.</p>
-        <span class="arrow-link">See the deli →</span>
-        <img src="/img/sandwich.svg" alt="">
-      </a>
-      <a class="dept bakery" href="/bakery">
-        <span class="label">The bakery</span>
-        <h3>From scratch</h3>
-        <p>Pies, fried pies, cookies, and bread.</p>
-        <span class="arrow-link">Today's prices →</span>
-        <img src="/img/pie.svg" alt="">
-      </a>
-      <a class="dept grocery" href="/grocery">
-        <span class="label">Bulk grocery</span>
-        <h3>By the bag</h3>
-        <p>Baking goods, spices, and candy for less.</p>
-        <span class="arrow-link">Browse →</span>
-        <img src="/img/jar.svg" alt="">
-      </a>
-      <a class="dept trays" href="/party-trays">
-        <span class="label">Party trays</span>
-        <h3>Feeding a crowd?</h3>
-        <p>Meat &amp; cheese platters for 15 to 45 people. Give us a day's notice and we'll handle the rest.</p>
-        <span class="arrow-link">Build a tray →</span>
-        <img src="/img/tray.svg" alt="">
-      </a>
-      <div class="dept stop">
-        <span class="label">Stop by</span>
-        <h3 data-store-status>Open today</h3>
-        <p><span data-store-address></span><br><a data-store-phone href="#"></a></p>
-        <a class="arrow-link" href="#hours">Full hours →</a>
-      </div>
+
+    <div class="center" style="margin-top:84px">
+      <p class="kicker">Serving Itasca from Main Street</p>
+      <h2>Welcome to Olde Towne</h2>
+      <div class="flourish"><span></span></div>
+      <p class="lede">We're a family-run country store with a full deli, a scratch bakery, and aisles of bulk pantry goods. Our aim is simple: good food, fair prices, friendly service, and a Christ-centered place folks are glad to stop in.</p>
+    </div>
+
+    <div class="features">
+      <div class="feature"><div class="icon"><svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 30c-2-10 6-16 16-16s18 6 16 16c-.5 3-3 5-6 5H14c-3 0-5.5-2-6-5z"/><path d="M17 20l3 4M24 18l3 5M31 20l3 4"/></svg></div><h3>Baked From Scratch</h3><p>Breads, pies, cookies, and rolls made in our kitchen every week.</p></div>
+      <div class="feature"><div class="icon"><svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="14"/><circle cx="24" cy="24" r="4"/><path d="M24 10v4M24 34v4M10 24h4M34 24h4"/><path d="M6 42l8-8"/></svg></div><h3>Sliced to Order</h3><p>A long case of meats and cheeses, cut fresh while you wait.</p></div>
+      <div class="feature"><div class="icon"><svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="15" y="6" width="18" height="6" rx="1.5"/><path d="M16 12h16c3 2.5 5 6 5 10v16a4 4 0 0 1-4 4H15a4 4 0 0 1-4-4V22c0-4 2-7.5 5-10z"/><path d="M17 26h14v8H17z"/></svg></div><h3>Bulk Pantry Prices</h3><p>Baking goods, spices, and candy repackaged to keep costs down.</p></div>
     </div>
   </div>
 </section>
 
-<section class="block paper">
-  <div class="wrap ticket-row">
-    <div>
-      <p class="label" style="color:var(--tomato-dark)">Order ahead</p>
-      <h2>Skip the lunch line.</h2>
-      <p style="font-size:1.12rem;max-width:34em">Build your sandwich, sub, or wrap online, pick a time, and it'll be wrapped and waiting. Most orders are ready in fifteen minutes. Trays just need a day.</p>
-      <div class="hero-actions">
-        <a class="btn" href="/order">Start an order</a>
-        <a class="arrow-link" href="/party-trays">or order a party tray</a>
-      </div>
+<section class="photo-strip" style="--img:url('/images/store-interior.jpg')">
+  <div class="wrap">
+    <p class="kicker" style="color:var(--gold-soft)">Fresh from our kitchen</p>
+    <h2>Pie Worth the Drive</h2>
+    <p>Fried pies, cream pies, and fruit pies by the slice or the whole. Special orders just need 48 hours.</p>
+    <a class="btn" href="/bakery">Browse the bakery</a>
+  </div>
+</section>
+
+<section class="block tint">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker">Made in house</p>
+      <h2>Bakery Favorites</h2>
+      <div class="flourish"><span></span></div>
     </div>
-    <div class="ticket" aria-hidden="true">
-      <span class="stamp">PAY AT PICKUP</span>
-      <div class="ticket-head"><span>OLDE TOWNE DELI</span><span>ORDER AHEAD</span></div>
-      <ol>
-        <li><div><strong>Pick your bread</strong><span>Buns, wraps, subs, or jalapeño cheese</span></div></li>
-        <li><div><strong>Pile it on</strong><span>Meats, cheeses, veggies, the works</span></div></li>
-        <li><div><strong>Pick a time</strong><span>Today or up to a week out</span></div></li>
-        <li><div><strong>Come get it</strong><span>We'll have it ready at the counter</span></div></li>
+    <div class="filter-tabs" role="tablist" id="fav-tabs"></div>
+    <div class="products" id="favorites"></div>
+    <p class="center" style="margin-top:36px"><a class="btn secondary" href="/bakery">View the full menu</a></p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap about">
+    <div>
+      <p class="kicker">Our story</p>
+      <h2>Family, Faith &amp; Good Food</h2>
+      <p class="muted">Olde Towne Country Store started with a simple idea: give our neighbors a place to grab an honest lunch, a loaf of fresh bread, and the pantry staples they need without the big-box prices.</p>
+      <ul class="check-list">
+        <li>Sandwiches, subs, and wraps on homemade bread</li>
+        <li>Meats and cheeses sliced fresh to order</li>
+        <li>Pies, cookies, and breads baked from scratch</li>
+        <li>Bulk baking supplies, spices, and candy</li>
+      </ul>
+      <a class="btn" href="/about">Meet the family</a>
+    </div>
+    <div class="arches">
+      <div class="arch tall"><img src="/images/team.jpg" alt="The Olde Towne Country Store family behind the deli counter"></div>
+      <div class="arch short"><img src="/images/bakery-bags.jpg" alt="Fresh-baked goods bagged on the counter"></div>
+      <div class="arch short"><img src="/images/deli-service.jpg" alt="Packing a deli order at the counter"></div>
+    </div>
+  </div>
+</section>
+
+<section class="dark">
+  <div class="dark-split">
+    <div class="media" style="--img:url('/images/deli-counter.jpg')"></div>
+    <div class="copy">
+      <p class="kicker">Order ahead</p>
+      <h2>Lunch, Ready When You Are</h2>
+      <ol class="steps-list">
+        <li><div><strong>Pick your bread</strong><span>Buns, wraps, subs, or our jalapeño cheese bread</span></div></li>
+        <li><div><strong>Pile it on</strong><span>Meats, cheeses, veggies, and condiments</span></div></li>
+        <li><div><strong>Choose a pickup time</strong><span>Today or up to a week ahead</span></div></li>
       </ol>
-      <div class="ticket-foot"><span>THANK YOU!</span><span>ITASCA, TX</span></div>
+      <div class="hero-actions" style="justify-content:flex-start"><a class="btn" href="/order">Start an order</a><a class="btn light" href="/party-trays">Party trays</a></div>
     </div>
+  </div>
+</section>
+
+<section class="dark" id="hours" style="border-top:1px solid rgba(200,144,43,.25)">
+  <div class="dark-split">
+    <div class="copy">
+      <p class="kicker">Come see us</p>
+      <h2>Visit the Store</h2>
+      <ul class="contact-list">
+        <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-7 7-12a7 7 0 0 0-14 0c0 5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><span class="muted label">Address</span><br><a id="map-link" href="#" target="_blank" rel="noopener" data-store-address></a></div></li>
+        <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></span><div><span class="muted label">Phone</span><br><a data-store-phone href="#"></a></div></li>
+        <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><span class="muted label">Today</span><br><span data-store-status></span></div></li>
+      </ul>
+      <div data-store-hours style="max-width:380px"></div>
+    </div>
+    <div class="map-wrap"><iframe class="map-frame" id="map-embed" title="Map to the store" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
   </div>
 </section>
 
 <section class="block">
   <div class="wrap">
-    <div class="section-head">
-      <h2>Out of the oven.</h2>
-      <p>A few favorites from the bakery case. Special orders need 48 hours — <a href="/contact">give us a holler</a>.</p>
-    </div>
-    <div class="tags-row" id="bakery-picks"></div>
-    <p style="margin-top:28px"><a class="btn secondary" href="/bakery">See the whole bakery menu</a></p>
-  </div>
-</section>
-
-<section class="block paper" id="hours">
-  <div class="wrap visit">
-    <div>
-      <p class="label" style="color:var(--tomato-dark)">Come see us</p>
-      <h2>Right on <span class="squiggle">Main Street.</span></h2>
-      <p style="font-size:1.12rem;max-width:32em">We're a family-run store that believes in good food, fair prices, and treating folks like neighbors — because most of you are. Christ-centered, and glad you're here.</p>
-      <p><strong data-store-address></strong><br><a data-store-phone href="#"></a></p>
-      <p><a class="btn secondary small" id="map-link" href="#" target="_blank" rel="noopener">Get directions</a></p>
-    </div>
-    <div class="sign-wrap">
-      <div class="sign">
-        <h3>Store Hours</h3>
-        <p class="now label" data-store-status></p>
-        <div data-store-hours></div>
-      </div>
+    <div class="newsletter">
+      <div><p class="kicker" style="margin-bottom:4px">Specials &amp; news</p><h2>Hear About Fresh Batches First</h2><p class="muted" style="margin:0">Weekly specials, seasonal pies, and holiday hours — no spam, ever.</p></div>
+      <a class="btn" id="news-link" href="/contact" target="_blank" rel="noopener">Sign me up</a>
     </div>
   </div>
 </section>
 </main>
 <div id="site-footer"></div>
 <script type="module">
-import { esc, money, loadSettings } from '/js/site.js';
+import { esc, money, loadSettings, EMBLEM } from '/js/site.js';
+document.querySelectorAll('[data-emblem]').forEach((n) => (n.innerHTML = EMBLEM));
 const s = await loadSettings();
-document.getElementById('map-link').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${s.store_name}, ${s.address}`)}`;
-const cats = await fetch('/api/bakery').then((r) => r.json());
-// One or two items from several categories, so the case looks like a real mix.
-const picks = cats.flatMap((c) => c.items.filter((i) => i.price != null).slice(0, 1).map((i) => ({ ...i, cat: c.name }))).slice(0, 10);
-document.getElementById('bakery-picks').innerHTML = picks
-  .map((i) => `<div class="price-tag"><span class="cat">${esc(i.cat)}</span><span class="name">${esc(i.name)}</span><span class="amt">${money(i.price)}</span></div>`)
-  .join('');
+const q = encodeURIComponent(`${s.store_name}, ${s.address}`);
+document.getElementById('map-link').href = `https://www.google.com/maps/search/?api=1&query=${q}`;
+document.getElementById('map-embed').src = `https://maps.google.com/maps?q=${q}&z=15&output=embed`;
+if (s.newsletter_url) document.getElementById('news-link').href = s.newsletter_url;
+
+// Bakery favorites, straight from the admin-managed bakery menu.
+const art = (cat) => (/pie|cake|cookie|whoopie|brownie/i.test(cat) ? '/img/pie.svg' : /granola/i.test(cat) ? '/img/jar.svg' : '/img/bread.svg');
+const cats = (await fetch('/api/bakery').then((r) => r.json())).filter((c) => c.items.some((i) => i.price != null));
+const tabs = document.getElementById('fav-tabs');
+const grid = document.getElementById('favorites');
+const shown = ['all', ...cats.slice(0, 5).map((c) => String(c.id))];
+const render = (id) => {
+  const pool = id === 'all' ? cats.flatMap((c) => c.items.slice(0, 1).map((i) => ({ ...i, cat: c.name })))
+    : cats.filter((c) => String(c.id) === id).flatMap((c) => c.items.map((i) => ({ ...i, cat: c.name })));
+  grid.innerHTML = pool.filter((i) => i.price != null).slice(0, 8).map((i) => `
+    <article class="product"><div class="art"><img src="${art(i.cat)}" alt=""></div>
+      <div class="body"><div class="cat">${esc(i.cat)}</div><div class="name">${esc(i.name)}</div><div class="price">${money(i.price)}</div></div></article>`).join('');
+  tabs.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.id === id)));
+};
+tabs.innerHTML = shown.map((id) => `<button role="tab" data-id="${id}">${id === 'all' ? 'All' : esc(cats.find((c) => String(c.id) === id).name)}</button>`).join('');
+tabs.addEventListener('click', (e) => e.target.dataset.id && render(e.target.dataset.id));
+render('all');
 </script>
 
 </body>

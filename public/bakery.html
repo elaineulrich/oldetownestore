@@ -7,7 +7,7 @@
   <meta name="description" content="From-scratch breads, pies, fried pies, cookies, cinnamon rolls, and more. See our bakery menu and prices.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Figtree:wght@400;500;600;700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..800,0..100,0..1;1,9..144,400..800,0..100,0..1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@400;500;600&family=Yellowtail&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/site.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥖</text></svg>">
   <script type="module" src="/js/site.js"></script>
@@ -15,10 +15,11 @@
 <body>
 <div id="site-header"></div>
 <main id="main">
-<section class="page-head">
+<section class="page-head" style="--img:url('/images/bakery-bags.jpg')">
   <div class="wrap">
-    <h1>The <em>bakery.</em></h1>
-    <p>Breads, pies, cookies, and sweet things made from scratch. Need something special? Give us 48 hours' notice and a call.</p>
+    <div class="crumbs"><a href="/">Home</a> &nbsp;/&nbsp; The Bakery</div>
+    <h1>The Bakery</h1>
+    <p>Breads, pies, cookies, and sweet things made from scratch. Need something special? Give us 48 hours' notice.</p>
     
   </div>
 </section>
@@ -38,7 +39,7 @@ const tabs = document.getElementById("bakery-tabs");
 const list = document.getElementById("bakery-list");
 const render = (id) => {
   const shown = id === "all" ? cats : cats.filter((c) => String(c.id) === id);
-  list.innerHTML = shown.map((c) => `<div class="board"><h3>${esc(c.name)}<span class="label">${c.items.length} item${c.items.length === 1 ? "" : "s"}</span></h3>${c.note ? `<p class="muted">${esc(c.note)}</p>` : ""}
+  list.innerHTML = shown.map((c) => `<div class="board"><h3>${esc(c.name)}</h3><div class="count">${c.items.length} item${c.items.length === 1 ? "" : "s"}</div>${c.note ? `<p class="muted">${esc(c.note)}</p>` : ""}
     <ul class="price-list">${c.items.map((i) => `<li><span>${esc(i.name)}</span><span class="dots"></span><span class="price">${i.price == null ? "ask" : money(i.price)}</span></li>`).join("")}</ul></div>`).join("")
     || `<p class="muted">Menu coming soon.</p>`;
   tabs.querySelectorAll("button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.id === id)));
