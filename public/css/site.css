@@ -244,6 +244,28 @@ section.block.white { background: #fff; }
 .dark .hours-table td { padding: 6px 0; border-bottom: 1px dashed rgba(232, 220, 203, 0.18); }
 .dark .hours-table tr.today { color: var(--gold); }
 
+/* Reviews carousel */
+.reviews {
+  text-align: center; color: #fff; padding: clamp(70px, 10vw, 110px) 0;
+  background: linear-gradient(rgba(25, 18, 13, 0.82), rgba(25, 18, 13, 0.86)), var(--img) center / cover;
+}
+.reviews h2 { color: #fff; }
+.review-stage { display: grid; grid-template-columns: 48px 1fr 48px; align-items: center; gap: 12px; max-width: 860px; margin: 18px auto 0; }
+.review-slides { display: grid; }
+.review { grid-area: 1 / 1; margin: 0; opacity: 0; visibility: hidden; transition: opacity 0.5s; }
+.review.active { opacity: 1; visibility: visible; }
+.review .stars { color: var(--gold); font-size: 1.35rem; letter-spacing: 4px; margin-bottom: 14px; }
+.review .stars span { color: rgba(255, 255, 255, 0.25); }
+.review blockquote { margin: 0 0 18px; font: italic 500 clamp(1.25rem, 2.4vw, 1.6rem)/1.5 var(--serif); color: #f3ead8; }
+.review figcaption { font: 400 1.7rem var(--script); color: var(--gold-soft); }
+.review figcaption span { display: block; font: 500 0.7rem var(--sans); letter-spacing: 0.22em; text-transform: uppercase; color: #b8a993; margin-top: 4px; }
+.review-nav { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(244, 227, 191, 0.5); background: transparent; color: #fff; font-size: 1.6rem; line-height: 1; cursor: pointer; }
+.review-nav:hover { background: var(--gold); border-color: var(--gold); }
+.review-dots { display: flex; gap: 8px; justify-content: center; margin-top: 22px; }
+.review-dots button { width: 10px; height: 10px; padding: 0; border-radius: 50%; border: 1px solid var(--gold-soft); background: transparent; cursor: pointer; }
+.review-dots button[aria-current='true'] { background: var(--gold); border-color: var(--gold); }
+@media (max-width: 600px) { .review-stage { grid-template-columns: 1fr; } .review-nav { display: none; } }
+
 /* Newsletter */
 .newsletter { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; background: #fff; border-radius: 6px; padding: clamp(26px, 4vw, 44px); box-shadow: var(--shadow); outline: 1px solid var(--line); outline-offset: -10px; }
 .newsletter h2 { margin: 0; font-size: clamp(2rem, 4vw, 2.8rem); }

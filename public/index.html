@@ -116,6 +116,20 @@
   </div>
 </section>
 
+<section class="reviews hidden" id="reviews" style="--img:url('/images/kitchen-prep.jpg')" aria-roledescription="carousel" aria-label="Customer reviews">
+  <div class="wrap">
+    <p class="kicker" style="color:var(--gold-soft)">What our neighbors say</p>
+    <h2>Kind Words</h2>
+    <div class="review-stage">
+      <button class="review-nav prev" type="button" aria-label="Previous review">‹</button>
+      <div class="review-slides" id="review-slides" aria-live="polite"></div>
+      <button class="review-nav next" type="button" aria-label="Next review">›</button>
+    </div>
+    <div class="review-dots" id="review-dots"></div>
+    <p id="review-link-wrap" class="hidden" style="margin-top:26px"><a class="btn light small" id="review-link" href="#" target="_blank" rel="noopener">Read all our reviews on Google</a></p>
+  </div>
+</section>
+
 <section class="dark">
   <div class="dark-split">
     <div class="media" style="--img:url('/images/deli-counter.jpg')"></div>
@@ -184,6 +198,43 @@ const render = (id) => {
 tabs.innerHTML = shown.map((id) => `<button role="tab" data-id="${id}">${id === 'all' ? 'All' : esc(cats.find((c) => String(c.id) === id).name)}</button>`).join('');
 tabs.addEventListener('click', (e) => e.target.dataset.id && render(e.target.dataset.id));
 render('all');
+
+// Featured reviews (managed in Admin → Reviews). Hidden until at least one exists.
+const reviews = await fetch('/api/reviews').then((r) => r.json());
+if (reviews.length) {
+  const section = document.getElementById('reviews');
+  const slides = document.getElementById('review-slides');
+  const dots = document.getElementById('review-dots');
+  slides.innerHTML = reviews.map((r, i) => `
+    <figure class="review ${i ? '' : 'active'}" data-i="${i}">
+      <div class="stars" aria-label="${r.rating} out of 5 stars">${'★'.repeat(r.rating)}<span>${'★'.repeat(5 - r.rating)}</span></div>
+      <blockquote>“${esc(r.body)}”</blockquote>
+      <figcaption>${esc(r.author)}<span>${esc([r.source && `${r.source} review`, r.review_date].filter(Boolean).join(' · '))}</span></figcaption>
+    </figure>`).join('');
+  dots.innerHTML = reviews.length > 1 ? reviews.map((_, i) => `<button type="button" aria-label="Show review ${i + 1}" data-i="${i}"></button>`).join('') : '';
+  section.querySelectorAll('.review-nav').forEach((b) => b.classList.toggle('hidden', reviews.length < 2));
+  let current = 0;
+  const show = (i) => {
+    current = (i + reviews.length) % reviews.length;
+    slides.querySelectorAll('.review').forEach((el) => el.classList.toggle('active', Number(el.dataset.i) === current));
+    dots.querySelectorAll('button').forEach((el) => el.setAttribute('aria-current', String(Number(el.dataset.i) === current)));
+  };
+  show(0);
+  section.querySelector('.prev').onclick = () => show(current - 1);
+  section.querySelector('.next').onclick = () => show(current + 1);
+  dots.onclick = (e) => e.target.dataset.i && show(Number(e.target.dataset.i));
+  let paused = false;
+  section.addEventListener('mouseenter', () => (paused = true));
+  section.addEventListener('mouseleave', () => (paused = false));
+  if (reviews.length > 1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    setInterval(() => !paused && show(current + 1), 7000);
+  }
+  if (s.google_reviews_url) {
+    document.getElementById('review-link').href = s.google_reviews_url;
+    document.getElementById('review-link-wrap').classList.remove('hidden');
+  }
+  section.classList.remove('hidden');
+}
 </script>
 
 </body>

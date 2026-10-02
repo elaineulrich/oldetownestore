@@ -101,6 +101,7 @@ const VIEWS = {
   menu: renderMenu,
   ingredients: renderIngredients,
   bakery: renderBakery,
+  reviews: renderReviews,
   settings: renderSettings,
   messages: renderMessages,
   account: renderAccount,
@@ -536,6 +537,86 @@ async function renderBakery() {
       }
     }
     if (ok) renderBakery();
+  };
+}
+
+// ---------- Reviews ----------
+async function renderReviews() {
+  const [reviews, s] = await Promise.all([api('/reviews'), api('/settings')]);
+  const stars = (n) => '★'.repeat(n) + '☆'.repeat(5 - n);
+  const ratingSelect = (v, attr) => `<select ${attr} style="width:auto">${[5, 4, 3, 2, 1].map((n) => `<option value="${n}" ${n === v ? 'selected' : ''}>${stars(n)}</option>`).join('')}</select>`;
+  view.innerHTML = `
+    <h1>Reviews</h1>
+    <p class="muted">Reviews shown in the “What Our Neighbors Say” section on the home page. Copy your favorites from your Google listing — the section stays hidden until at least one review is shown.</p>
+    <div class="panel">
+      <h2>Link to all reviews</h2>
+      <div class="toolbar">
+        <div class="field" style="flex:1;min-width:260px"><label for="g-url">Google reviews page URL</label>
+          <input id="g-url" value="${esc(s.google_reviews_url || '')}" placeholder="https://g.page/r/... or your Google Maps listing" style="width:100%"></div>
+        <button class="btn small" id="g-save" type="button">Save link</button>
+      </div>
+      <p class="hint">Shown as a “Read all our reviews on Google” button. Tip: in Google Business Profile, choose “Ask for reviews” to copy this link.</p>
+    </div>
+    ${reviews.map((r) => `<div class="panel" data-review="${r.id}" style="${r.active ? '' : 'opacity:.6'}">
+      <div class="inline-fields">
+        <div class="field"><label>Name</label><input data-rf="author" value="${esc(r.author)}"></div>
+        <div class="field"><label>Rating</label>${ratingSelect(r.rating, 'data-rf="rating"')}</div>
+        <div class="field"><label>Date <span class="hint">(optional)</span></label><input data-rf="review_date" value="${esc(r.review_date)}" placeholder="e.g. March 2026"></div>
+        <div class="field"><label>Source</label><input data-rf="source" value="${esc(r.source)}"></div>
+      </div>
+      <div class="field"><label>Review</label><textarea data-rf="body" rows="3">${esc(r.body)}</textarea></div>
+      <div class="toolbar" style="margin:0">
+        <label class="switch"><input type="checkbox" data-rf="active" ${r.active ? 'checked' : ''}> Show on website</label>
+        <button class="icon-btn" data-act="move" data-dir="-1">↑ Move up</button>
+        <button class="icon-btn" data-act="move" data-dir="1">↓ Move down</button>
+        <button class="icon-btn danger" data-act="delete">Delete</button>
+      </div>
+    </div>`).join('')}
+    <div class="panel no-print">
+      <h2>Add a review</h2>
+      <form id="review-add">
+        <div class="inline-fields">
+          <div class="field"><label for="r-author">Name</label><input id="r-author" required maxlength="80" placeholder="As shown on Google"></div>
+          <div class="field"><label for="r-rating">Rating</label>${ratingSelect(5, 'id="r-rating"')}</div>
+          <div class="field"><label for="r-date">Date <span class="hint">(optional)</span></label><input id="r-date" maxlength="40"></div>
+        </div>
+        <div class="field"><label for="r-body">Review</label><textarea id="r-body" rows="3" required maxlength="1500" placeholder="Paste the review text exactly as written"></textarea></div>
+        <button class="btn small" type="submit">Add review</button>
+      </form>
+    </div>`;
+
+  document.getElementById('g-save').onclick = () => save('/settings', 'PUT', { google_reviews_url: document.getElementById('g-url').value }, 'Link saved');
+  document.getElementById('review-add').onsubmit = async (e) => {
+    e.preventDefault();
+    const body = {
+      author: document.getElementById('r-author').value,
+      rating: Number(document.getElementById('r-rating').value),
+      review_date: document.getElementById('r-date').value,
+      body: document.getElementById('r-body').value,
+    };
+    if (await save('/reviews', 'POST', body, 'Review added')) renderReviews();
+  };
+  view.onchange = async (e) => {
+    const el = e.target;
+    if (!el.dataset.rf) return;
+    const val = el.type === 'checkbox' ? el.checked : el.dataset.rf === 'rating' ? Number(el.value) : el.value;
+    const ok = await save(`/reviews/${el.closest('[data-review]').dataset.review}`, 'PATCH', { [el.dataset.rf]: val });
+    if (ok && el.dataset.rf === 'active') renderReviews();
+  };
+  view.onclick = async (e) => {
+    const b = e.target.closest('[data-act]');
+    if (!b) return;
+    const card = b.closest('[data-review]');
+    if (b.dataset.act === 'delete') {
+      if (confirm('Delete this review?') && (await save(`/reviews/${card.dataset.review}`, 'DELETE', undefined, 'Deleted'))) renderReviews();
+      return;
+    }
+    const sibs = [...view.querySelectorAll('[data-review]')];
+    const i = sibs.indexOf(card);
+    const j = i + Number(b.dataset.dir);
+    if (j < 0 || j >= sibs.length) return;
+    [sibs[i], sibs[j]] = [sibs[j], sibs[i]];
+    if (await save('/reorder/reviews', 'PUT', { ids: sibs.map((x) => Number(x.dataset.review)) }, 'Order updated')) renderReviews();
   };
 }
 

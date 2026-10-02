@@ -103,6 +103,18 @@ CREATE TABLE IF NOT EXISTS bakery_items (
   sort         INTEGER NOT NULL DEFAULT 0
 );
 
+-- Customer reviews the store chooses to feature (e.g. copied from Google).
+CREATE TABLE IF NOT EXISTS reviews (
+  id           INTEGER PRIMARY KEY,
+  author       TEXT NOT NULL,
+  rating       INTEGER NOT NULL DEFAULT 5 CHECK (rating BETWEEN 1 AND 5),
+  body         TEXT NOT NULL,
+  source       TEXT NOT NULL DEFAULT 'Google',
+  review_date  TEXT NOT NULL DEFAULT '',
+  active       INTEGER NOT NULL DEFAULT 1,
+  sort         INTEGER NOT NULL DEFAULT 0
+);
+
 CREATE TABLE IF NOT EXISTS messages (
   id          INTEGER PRIMARY KEY,
   created_at  TEXT NOT NULL DEFAULT (datetime('now')),
