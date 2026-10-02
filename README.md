@@ -25,6 +25,7 @@ On first start the database is created at `data/store.db` and seeded with the st
 | `PORT` | `3000` | HTTP port |
 | `DB_PATH` | `data/store.db` | SQLite database file (back this up) |
 | `ADMIN_USERNAME` / `ADMIN_PASSWORD` | `admin` / random | First admin account (only used when no admins exist) |
+| `ADMIN_RESET_PASSWORD` | — | Locked out? Set this (10+ characters), redeploy, sign in as `ADMIN_USERNAME`/`admin`, then remove it |
 | `SESSION_SECRET` | generated & stored in DB | Signs admin login cookies |
 | `NODE_ENV` | — | Set to `production` behind HTTPS to mark cookies `Secure` |
 | `SITE_URL` | — | Public site address, used for the "Open orders" link in alert emails |

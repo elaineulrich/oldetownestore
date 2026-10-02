@@ -165,7 +165,7 @@ function renderFooter(s) {
         </div>
         <div class="fine">
           <span>© ${new Date().getFullYear()} ${esc(s.store_name)}. All rights reserved.</span>
-          <span><a href="/contact">Contact</a> · <a href="/about">About</a></span>
+          <span><a href="/contact">Contact</a> · <a href="/about">About</a> · <a href="/admin/" rel="nofollow">Admin login</a></span>
         </div>
       </div>
     </footer>`;
