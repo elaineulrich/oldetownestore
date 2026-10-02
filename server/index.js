@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { openDb, getSettings, setSetting } from './db.js';
 import { createApp } from './app.js';
-import { hashPassword } from './auth.js';
+import { ensureAdmin } from './bootstrap.js';
 import { createMailer } from './mailer.js';
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -23,13 +23,15 @@ if (!sessionSecret) {
   }
 }
 
-// First run: create the initial admin account.
-if (db.prepare('SELECT COUNT(*) AS n FROM admin_users').get().n === 0) {
-  const username = (process.env.ADMIN_USERNAME || 'admin').toLowerCase();
-  const password = process.env.ADMIN_PASSWORD || randomBytes(9).toString('base64url');
-  db.prepare('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)').run(username, hashPassword(password));
-  console.log(`\nCreated admin account "${username}".`);
-  if (!process.env.ADMIN_PASSWORD) console.log(`Temporary password: ${password}\nChange it after signing in.\n`);
+const admin = ensureAdmin(db);
+if (admin.action === 'created') {
+  console.log(`\nCreated admin account "${admin.username}".`);
+  if (admin.tempPassword) console.log(`Temporary password: ${admin.tempPassword}\nChange it after signing in.\n`);
+} else if (admin.action === 'reset') {
+  console.log(`\nAdmin password for "${admin.username}" was set from ADMIN_RESET_PASSWORD.`);
+  console.log('Sign in, then remove ADMIN_RESET_PASSWORD so it is not applied again on the next restart.\n');
+} else if (admin.action === 'reset_rejected') {
+  console.log('\nADMIN_RESET_PASSWORD was ignored: it must be at least 10 characters.\n');
 }
 
 const mailer = createMailer();
