@@ -12,6 +12,7 @@ const PUBLIC_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'public')
 const PUBLIC_SETTING_KEYS = [
   'store_name', 'tagline', 'address', 'phone', 'email', 'facebook_url', 'newsletter_url', 'timezone',
   'hours', 'closed_dates', 'deli_ordering_enabled', 'tray_ordering_enabled', 'close_cutoff_minutes', 'announcement',
+  'google_reviews_url',
 ];
 
 class HttpError extends Error {
@@ -60,6 +61,14 @@ const FIELDS = {
   ingredients: { category: reqStr(50), name: reqStr(100), in_stock: bool },
   bakery_categories: { name: reqStr(100), note: str(300) },
   bakery_items: { name: reqStr(150), price: moneyOrNull, active: bool, category_id: int(1, Number.MAX_SAFE_INTEGER) },
+  reviews: {
+    author: reqStr(80), rating: int(1, 5), body: (v) => {
+      const s = str(1500)(v);
+      if (!s) throw new HttpError(400, 'Review text is required.');
+      return s;
+    },
+    source: str(40), review_date: str(40), active: bool,
+  },
 };
 
 function pick(table, body, { requireAll = [] } = {}) {
@@ -98,7 +107,7 @@ function nextSort(db, table, where = '', params = []) {
 
 function validateSettings(body) {
   const out = {};
-  const text = { store_name: 100, tagline: 200, address: 200, phone: 30, email: 200, facebook_url: 300,
+  const text = { store_name: 100, tagline: 200, address: 200, phone: 30, email: 200, facebook_url: 300, google_reviews_url: 500,
     newsletter_url: 500, announcement: 500 };
   for (const [k, max] of Object.entries(text)) if (k in body) out[k] = str(max)(body[k]);
   for (const k of ['deli_ordering_enabled', 'tray_ordering_enabled']) if (k in body) out[k] = Boolean(body[k]);
@@ -203,6 +212,10 @@ export function createApp({ db, sessionSecret, secureCookies = false, mailer = n
     sendOrderAlert(orderId, order);
     res.status(201).json({ id: orderId, estTotal: order.estTotal, hasUnpriced: order.hasUnpriced,
       pickupDate: order.pickupDate, pickupTime: order.pickupTime });
+  });
+
+  api.get('/reviews', (_req, res) => {
+    res.json(db.prepare('SELECT id, author, rating, body, source, review_date FROM reviews WHERE active = 1 ORDER BY sort, id').all());
   });
 
   api.post('/contact', (req, res) => {
@@ -393,7 +406,7 @@ export function createApp({ db, sessionSecret, secureCookies = false, mailer = n
   });
 
   // Reordering: body { ids: [...] } in the desired order.
-  const SORTABLE = ['products', 'option_groups', 'options', 'ingredients', 'bakery_categories', 'bakery_items'];
+  const SORTABLE = ['products', 'option_groups', 'options', 'ingredients', 'bakery_categories', 'bakery_items', 'reviews'];
   admin.put('/reorder/:table', (req, res) => {
     const table = req.params.table;
     if (!SORTABLE.includes(table)) throw new HttpError(404, 'Not found.');
@@ -495,6 +508,25 @@ export function createApp({ db, sessionSecret, secureCookies = false, mailer = n
       throw new HttpError(502, `The test email couldn’t be sent: ${err.message}`);
     }
     res.json({ ok: true, sentTo: to });
+  });
+
+  // Featured reviews
+  admin.get('/reviews', (_req, res) => {
+    res.json(db.prepare('SELECT * FROM reviews ORDER BY sort, id').all());
+  });
+  admin.post('/reviews', (req, res) => {
+    const fields = pick('reviews', req.body, { requireAll: ['author', 'body'] });
+    if (!fields.source) fields.source = 'Google';
+    fields.sort = nextSort(db, 'reviews');
+    res.status(201).json({ id: insert(db, 'reviews', fields) });
+  });
+  admin.patch('/reviews/:id', (req, res) => {
+    update(db, 'reviews', id(req), pick('reviews', req.body));
+    res.json({ ok: true });
+  });
+  admin.delete('/reviews/:id', (req, res) => {
+    remove(db, 'reviews', id(req));
+    res.json({ ok: true });
   });
 
   // Contact messages

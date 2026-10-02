@@ -207,6 +207,25 @@ test('admin can manage products, options, stock, bakery, settings, and orders', 
   assert.equal((await req(`/api/admin/orders/${id}`, { ...a, method: 'PATCH', body: { status: 'bogus' } })).status, 400);
 });
 
+test('admin manages featured reviews; only shown ones are public', async () => {
+  const a = { auth: true };
+  assert.deepEqual((await req('/api/reviews')).data, []);
+  assert.equal((await req('/api/admin/reviews', { ...a, method: 'POST', body: { author: 'A', body: 'x', rating: 6 } })).status, 400);
+  assert.equal((await req('/api/admin/reviews', { ...a, method: 'POST', body: { author: 'A', body: '' } })).status, 400);
+  const one = (await req('/api/admin/reviews', { ...a, method: 'POST', body: { author: 'First', body: 'Great bread', rating: 5 } })).data;
+  const two = (await req('/api/admin/reviews', { ...a, method: 'POST', body: { author: 'Second', body: 'Nice', rating: 4 } })).data;
+  await req(`/api/admin/reviews/${two.id}`, { ...a, method: 'PATCH', body: { active: false } });
+  let pub = (await req('/api/reviews')).data;
+  assert.deepEqual(pub.map((r) => [r.author, r.source]), [['First', 'Google']]);
+  await req(`/api/admin/reviews/${two.id}`, { ...a, method: 'PATCH', body: { active: true } });
+  await req('/api/admin/reorder/reviews', { ...a, method: 'PUT', body: { ids: [two.id, one.id] } });
+  pub = (await req('/api/reviews')).data;
+  assert.deepEqual(pub.map((r) => r.author), ['Second', 'First']);
+  const saved = await req('/api/admin/settings', { ...a, method: 'PUT', body: { google_reviews_url: 'https://g.page/r/example' } });
+  assert.equal(saved.data.google_reviews_url, 'https://g.page/r/example');
+  assert.equal((await req('/api/settings')).data.google_reviews_url, 'https://g.page/r/example');
+});
+
 test('contact form stores messages for admins', async () => {
   const bad = await req('/api/contact', { method: 'POST', body: { name: 'A', email: 'nope', message: 'hi' } });
   assert.equal(bad.status, 400);

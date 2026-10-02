@@ -116,6 +116,7 @@ export const DEFAULT_SETTINGS = {
   close_cutoff_minutes: 15,
   announcement: '',
   order_alert_emails: [],
+  google_reviews_url: '',
 };
 
 export function seed(db) {

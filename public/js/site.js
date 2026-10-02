@@ -77,6 +77,14 @@ export function statusLine(settings) {
   return { open: false, text: 'Closed now' };
 }
 
+// Wheat-sheaf emblem used in the header, footer, and hero.
+export const EMBLEM = `<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+  <circle cx="32" cy="32" r="30" stroke-width="1.5"/><circle cx="32" cy="32" r="25.5" stroke-width="1" stroke-dasharray="1.5 3.5"/>
+  <path d="M32 50V20"/><path d="M32 22c-5-2-6-7-6-7s5 0 6 5M32 22c5-2 6-7 6-7s-5 0-6 5"/>
+  <path d="M32 30c-5-2-7-7-7-7s5 0 7 5M32 30c5-2 7-7 7-7s-5 0-7 5"/>
+  <path d="M32 38c-5-2-7-7-7-7s5 0 7 5M32 38c5-2 7-7 7-7s-5 0-7 5"/>
+  <path d="M26 50h12"/></svg>`;
+
 function renderHeader(s) {
   const el = document.getElementById('site-header');
   if (!el) return;
@@ -87,17 +95,17 @@ function renderHeader(s) {
   el.outerHTML = `
     <a class="skip" href="#main">Skip to content</a>
     ${s.announcement ? `<div class="announce">${esc(s.announcement)}</div>` : ''}
-    <div class="topbar label">
+    <div class="topbar">
       <div class="wrap">
         <span><span class="status-dot ${status.open ? '' : 'closed'}"></span>${esc(status.text)}</span>
-        <span><a href="tel:${tel}">${esc(s.phone)}</a> · ${esc(s.address.split(',')[0])}, Itasca TX</span>
+        <span><a href="tel:${tel}">${esc(s.phone)}</a> &nbsp;·&nbsp; ${esc(s.address)}</span>
       </div>
     </div>
     <header class="site-header">
       <div class="wrap">
         <a class="brand" href="/" aria-label="${esc(s.store_name)} home">
-          <span class="brand-name">Olde Towne</span>
-          <span class="brand-sub">Country Store · Itasca, TX</span>
+          <span class="brand-mark" style="color:var(--gold)">${EMBLEM}</span>
+          <span class="brand-text"><span class="brand-name">Olde Towne</span><span class="brand-sub">Country Store</span></span>
         </a>
         <button class="nav-toggle" aria-expanded="false" aria-controls="main-nav">Menu</button>
         <nav class="nav" id="main-nav" aria-label="Main">
@@ -123,28 +131,41 @@ function renderFooter(s) {
   el.outerHTML = `
     <footer class="site-footer">
       <div class="wrap">
-        <div class="footer-mark">Olde Towne <span>Country Store</span></div>
         <div class="cols">
           <div>
-            <h3>Find us</h3>
-            <p><a href="${map}" target="_blank" rel="noopener">${esc(s.address)}</a></p>
-            <p><a href="tel:${tel}">${esc(s.phone)}</a></p>
-            ${s.email ? `<p><a href="mailto:${esc(s.email)}">${esc(s.email)}</a></p>` : ''}
+            <a class="brand" href="/">
+              <span class="brand-mark" style="color:var(--gold)">${EMBLEM}</span>
+              <span class="brand-text"><span class="brand-name">Olde Towne</span><span class="brand-sub">Country Store</span></span>
+            </a>
+            <p>A family-run deli, bakery, and bulk food store on Main Street in Itasca, Texas.</p>
+            ${s.facebook_url ? `<p><a href="${esc(s.facebook_url)}" target="_blank" rel="noopener">Follow us on Facebook →</a></p>` : ''}
           </div>
           <div>
-            <h3>Hours <span class="open-badge ${open ? 'open' : 'closed'}">${open ? 'Open now' : 'Closed now'}</span></h3>
+            <h3>Visit</h3>
+            <ul>
+              <li><a href="${map}" target="_blank" rel="noopener">${esc(s.address)}</a></li>
+              <li><a href="tel:${tel}">${esc(s.phone)}</a></li>
+              ${s.email ? `<li><a href="mailto:${esc(s.email)}">${esc(s.email)}</a></li>` : ''}
+            </ul>
+          </div>
+          <div>
+            <h3>Hours <span class="open-badge ${open ? 'open' : 'closed'}">${open ? 'Open' : 'Closed'}</span></h3>
             ${hoursTable(s)}
           </div>
           <div>
-            <h3>Specials &amp; news</h3>
-            <p>Seasonal pies, weekly deals, and holiday hours — straight to your inbox.</p>
-            ${s.newsletter_url ? `<p><a class="btn small butter" href="${esc(s.newsletter_url)}" target="_blank" rel="noopener">Sign me up</a></p>` : ''}
-            ${s.facebook_url ? `<p><a href="${esc(s.facebook_url)}" target="_blank" rel="noopener">Follow along on Facebook</a></p>` : ''}
+            <h3>Explore</h3>
+            <ul>
+              <li><a href="/order">Order deli online</a></li>
+              <li><a href="/party-trays">Party trays</a></li>
+              <li><a href="/bakery">Bakery menu</a></li>
+              <li><a href="/grocery">Bulk grocery</a></li>
+              ${s.newsletter_url ? `<li><a href="${esc(s.newsletter_url)}" target="_blank" rel="noopener">Specials &amp; news sign-up</a></li>` : ''}
+            </ul>
           </div>
         </div>
         <div class="fine">
-          <span>© ${new Date().getFullYear()} ${esc(s.store_name)}</span>
-          <span><a href="/contact">Contact</a> · <a href="/order">Order ahead</a> · <a href="/party-trays">Party trays</a></span>
+          <span>© ${new Date().getFullYear()} ${esc(s.store_name)}. All rights reserved.</span>
+          <span><a href="/contact">Contact</a> · <a href="/about">About</a></span>
         </div>
       </div>
     </footer>`;
